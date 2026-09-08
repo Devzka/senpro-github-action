@@ -1,17 +1,15 @@
-name: Test, build and Deploy | Module 01 - Lab2.2 Senior Project
+name: Test, Build, and Deploy | Modul 01 Lab2.2 Senior Project
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   test-build:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [16.x]
-
     steps:
       - uses: actions/checkout@v4
       - name: Testing Build pre-Deploy
@@ -19,9 +17,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - run: npm i
+      - run: npm install
       - run: npm run build
-
   deploy:
     needs: test-build
     runs-on: ubuntu-latest
@@ -31,33 +28,33 @@ jobs:
         node-version: [16.x]
 
     steps:
-    - name: Build app on VM
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: ${{ secrets.PORT }}
-        script: |
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/ssh-praktikan97
-          echo "Check project folder";
-          [ ! -d "${HOME}/senpro/546873/modul02/senpro-github-action/" ] &&
-          {
-            echo "Repository has not been cloned. Cloning. . .";
-            mkdir -p ~/senpro/546873/modul02;
-            git clone https://github.com/Devzka/senpro-github-action.git;
-            cd ~/senpro/546873/modul02/senpro-github-action;
-            echo "Install Packages and Build Project";
-            npm install;
-            npm run build;
-          } ||
-          {
-            echo "Repository already exists. Building. . .";
-            cd ~/senpro/546873/modul02/senpro-github-action;
-            git restore .;
-            git pull origin main;
-            echo "Install Packages and Build Project";
-            npm install;
-            npm run build;
-          }
+      - name: Build app on VM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/ssh-praktikan99
+            echo "Cek folder project"
+
+            if [ ! -d "${HOME}/senpro/518350/modul02/senpro-github-action/" ]; then
+              echo "Repository belum di-clone. Cloning..."
+              mkdir -p ~/senpro/518350/modul02
+              cd ~/senpro/518350/modul02
+              git clone https://github.com/SentientCorn/senpro-github-action-Test.git senpro-github-action
+              cd ~/senpro/518350/modul02/senpro-github-action
+              echo "Install Package dan Build Project"
+              npm install
+              npm run build
+            else
+              echo "Repository sudah ada. Building..."
+              cd ~/senpro/518350/modul02/senpro-github-action
+              git restore .
+              git pull origin main
+              echo "Install Package dan Build Project"
+              npm install
+              npm run build
+            fi
