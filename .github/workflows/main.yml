@@ -56,6 +56,7 @@ jobs:
             echo "Repository already exists. Building. . .";
             cd ~/senpro/546873/modul02/senpro-github-action;
             git restore .;
+            git pull origin main;
             echo "Install Packages and Build Project";
             npm install;
             npm run build;
